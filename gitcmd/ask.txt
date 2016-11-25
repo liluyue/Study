@@ -1,0 +1,9 @@
+1.question:git pull --allow-unrelated-histories
+answer: git pull --allow-unrelated-histories
+
+2.question :git pull --allow-unrelated-histories
+answer:git pull
+
+3.questin : 
+answer:git rm --cached filename
+answer:git checkout -- <file>...
