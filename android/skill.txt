@@ -1,0 +1,21 @@
+1.使用DialogFragment来将dialog的生命周期与activity的生命周期绑定
+2.DialogFragment的透明：
+1）在onCreateView中：
+  Window window = getDialog().getWindow();
+          if (window!=null) {
+	              window.setGravity(Gravity.FILL);
+		                  window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+				    }
+2）在onStart中：
+   Window window = getDialog().getWindow();
+           if (window!=null) {
+	               WindowManager.LayoutParams windowParams = window.getAttributes();
+		                   windowParams.dimAmount = 0.0f;
+				               window.setAttributes(windowParams);
+					               }
+3.集合的同步：
+Collections.synchronizedList(); 用listIterator时要加锁（访问引用的内容!=访问引用所在的对象OB）
+CopyOnWriteArrayList:读写分离
+
+4.synchronized :本质是针对代码块的锁，钥匙是同步的关键字
+
