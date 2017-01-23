@@ -18,4 +18,9 @@ Collections.synchronizedList(); 用listIterator时要加锁（访问引用的内
 CopyOnWriteArrayList:读写分离
 
 4.synchronized :本质是针对代码块的锁，钥匙是同步的关键字
+5.不同状态下文字颜色设置：
+ColorStateList
+ColorStateList.createFromXml
+resource.getColorStateList
+6.Fragment实现懒加载：setUserVisibleHint
 
