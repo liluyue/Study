@@ -10,30 +10,35 @@ import android.widget.RelativeLayout;
  * Created by liluyue on 2017/2/18.
  */
 
-public class ViewGroup1 extends RelativeLayout{
-    private static final String TAG = "ViewGroup1";
-    public ViewGroup1(Context context) {
+public class ViewGroup2 extends RelativeLayout{
+    public static final String TAG = "ViewGroup2";
+    public ViewGroup2(Context context) {
         super(context);
     }
 
-    public ViewGroup1(Context context, AttributeSet attrs) {
+    public ViewGroup2(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ViewGroup1(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ViewGroup2(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        Log.v(TAG,MainActivity.dispatchTouchEvent+" "+MainActivity.getString(ev));
-        return super.dispatchTouchEvent(ev);
+        Log.v(TAG,MainActivity.dispatchTouchEvent+" "+MainActivity.getString(ev)+"\n");
+        boolean b =true;
+        b= super.dispatchTouchEvent(ev);
+        if (i>3){
+            getChildAt(0).dispatchTouchEvent(ev);
+        }
+        return b;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         Log.v(TAG,MainActivity.onTouchEvent+" "+MainActivity.getString(event));
-        return super.onTouchEvent(event);
+        return true||super.onTouchEvent(event);
     }
    public int i=0;
     @Override
@@ -42,7 +47,7 @@ public class ViewGroup1 extends RelativeLayout{
             i++;
         }
         Log.v(TAG,MainActivity.onInterceptTouchEvent+" "+MainActivity.getString(ev));
-        return super.onInterceptTouchEvent(ev)||i>2;
+        return super.onInterceptTouchEvent(ev)||i>3;
     }
 
 }

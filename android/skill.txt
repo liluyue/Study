@@ -24,3 +24,17 @@ ColorStateList.createFromXml
 resource.getColorStateList
 6.Fragment实现懒加载：setUserVisibleHint
 
+7.触屏事件
+dispatchTouchEvent ->onInterceptTouchEvent -> (setOnTouchListener ->onTouchEvent)
+dispatchTouchEvent 内部调用了onInterceptTouchEvent 、setOnTouchListener、onTouchEvent
+当onInterceptTouchEvent拦截事件后当次其子view收到MotionEvent为null，后续接收不到事件，
+当次onTouchEvent 不走，后续onInterceptTouchEvent 不再走，走onTouchEvent
+如果onInterceptTouchEvent在ACTION_DOWN时拦截则当次onTouchEvent走，以后该view接收不到事件
+if(setOnTouchListener) else if(onTouchEvent)
+猜测：
+只有流程中存在onTouchEvent=true，该流程才有机会接收到后续事件
+且后续事件的终点都是onTouchEvent=true所在的view（设该view记end标志），
+当上游onInterceptTouchEvent=true（parent）时，end标志转到parent身上，存在end标志的view的
+onInterceptTouchEvent将不再执行
+
+
