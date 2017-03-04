@@ -36,5 +36,5 @@ if(setOnTouchListener) else if(onTouchEvent)
 且后续事件的终点都是onTouchEvent=true所在的view（设该view记end标志），
 当上游onInterceptTouchEvent=true（parent）时，end标志转到parent身上，存在end标志的view的
 onInterceptTouchEvent将不再执行
-
+一旦end标志存在，无论后续是否是false，该流程都会走
 
