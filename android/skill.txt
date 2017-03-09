@@ -38,3 +38,6 @@ if(setOnTouchListener) else if(onTouchEvent)
 onInterceptTouchEvent将不再执行
 一旦end标志存在，无论后续是否是false，该流程都会走
 
+8.layout inspector 的使用
+需要开启debug模式 ：android:debuggable="true"
+
