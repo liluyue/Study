@@ -56,3 +56,5 @@ onInterceptTouchEvent将不再执行
 　　order是我们想要的排序方式。
 
 　　注意，where语句中的两个括号是系统自己帮我们加的。
+
+如果你使用的是ContentProvider, 一般情况下, 官方是不希望你执行关闭操作的, 你在ContentProvider里也是找不到onDestroy()的生命周期函数的.
