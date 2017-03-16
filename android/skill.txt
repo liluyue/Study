@@ -41,3 +41,18 @@ onInterceptTouchEvent将不再执行
 8.layout inspector 的使用
 需要开启debug模式 ：android:debuggable="true"
 
+
+9.数据库
+当我们调用android系统的query操作的时候，android会把我们写在query方法中的参数构造成一句SQL，
+
+　　这句SQL的结构是：select projection from table where ( selection ) order by order;
+
+　　projection是我们要查询的列；
+
+　　table是根据Uri确定的数据库表；
+
+　　selection使我们自己的查询条件；
+
+　　order是我们想要的排序方式。
+
+　　注意，where语句中的两个括号是系统自己帮我们加的。
