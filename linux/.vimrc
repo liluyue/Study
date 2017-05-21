@@ -5,14 +5,16 @@ set incsearch
 set hlsearch
 set cursorline 
 set tabstop=4
-set enc=utf-8
+"set enc=utf-8
 set fencs=utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936
 set showmatch
 set matchtime=1
 colorscheme darkblue
 "Set mapleader
 let mapleader = ","
-
+"map <c-f> <PageDown>
+unmap <C-F>
+unmap <C-A>
 "Fast reloading of the .vimrc
 map <silent> <leader>ss :source ~/.vimrc<cr>
 "Fast editing of .vimrc
@@ -20,6 +22,9 @@ map <silent> <leader>ee :e ~/.vimrc<cr>
 "When .vimrc is edited, reload it
 autocmd! bufwritepost .vimrc source ~/.vimrc 
 "Favorite filetype
+set guifont=courier_new:h20
+
+au GUIEnter * simalt ~x
 set ffs=unix,dos,mac
 set showcmd
 map <leader>fd :se ff=dos<cr>
@@ -42,3 +47,4 @@ imap <m-0> <esc>0i
 	filetype plugin on          " plugins are enabled
 set shiftwidth=4
 set softtabstop=4
+highlight CursorLine   cterm=NONE ctermbg=darkblue ctermfg=green guibg=black guifg=green
