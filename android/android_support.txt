@@ -1,0 +1,15 @@
+v4 支持库
+这些库旨在与 Android 2.3（API 级别 9）及更高版本搭配使用。与其他支持库相比，它们包含的 API 集合最大，包括对应用组件、用户界面功能、辅助功能、数据处理、网络连接以及编程实用工具的支持。
+分为4个模块：
+1.v4 compact库：为众多框架 API 提供兼容性包装器，例如 Context.obtainDrawable() 和 View.performAccessibilityAction()。
+2.v4 core-utils 库：提供大量实用程序类，例如 AsyncTaskLoader 和 PermissionChecker。
+3.v4 core-ui 库：实现各种 UI 相关组件，例如 ViewPager、NestedScrollView 和 ExploreByTouchHelper。
+4.v4 media-compat 库：向后移植部分媒体框架，包括 MediaBrowser 和 MediaSession。
+5.v4 fragment 库：添加对使用片段封装用户界面和功能的支持，从而使应用能够提供可以在大屏幕设备与小屏幕设备之间进行调节的布局。此模块依赖于 compat、core-utils、core-ui 和 media-compat。
+6.Dalvik 可执行文件分包支持库：此库可以为使用多个 Dalvik Executable (DEX) 文件开发应用提供支持。引用超过 65536 个方法的应用须使用 Dalvik 可执行文件分包配置。如需了解有关使用 Dalvik 可执行文件分包的详细信息，请参阅使用超过 6.4 万种方法开发应用。
+如果您在 Gradle 脚本中列出了 support-v4，您的 APK 将包含所有的 v4 模块
+
+v7 支持库
+一些库旨在与 Android 2.3（API 级别 9）及更高版本搭配使用。这些库提供了特定的功能集，并且可以单独添加到应用中，与其他库互不影响。
+
+

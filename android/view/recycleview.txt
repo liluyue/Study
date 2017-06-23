@@ -1,0 +1,46 @@
+A flexible view for providing a limited window into a large data set.
+一个灵活的view用于向一个大数据集合提供一个有限窗口
+Glossary of terms
+专业术语
+Adapter: A subclass of RecyclerView.Adapter responsible for providing views that represent items in a data set.
+Adapter:RecyclerView.Adapter的子类负责提供view表示数据集合中的子项
+Position: The position of a data item within an Adapter.
+Position：数据项在Adapter中的位置
+Index: The index of an attached child view as used in a call to ViewGroup.getChildAt. Contrast with Position.
+Index:绑定子view的索引在调用ViewGroup.getChildAt时使用。与Position对比
+Binding: The process of preparing a child view to display data corresponding to a position within the adapter.
+Binding：准备显示adapter对应位置数据的子view的过程
+Recycle (view): A view previously used to display data for a specific adapter position may be placed in a cache for later reuse to display the same type of data again later. This can drastically improve performance by skipping initial layout inflation or construction.
+Recycle（view）：一个早先用于显示一个特定adapter位置数据的view，可以被放在缓存中以备之后显示相同类型的数据时复用。通过跳过布局初始化或构建过程来显著的提升性能。
+Scrap (view): A child view that has entered into a temporarily detached state during layout. Scrap views may be reused without becoming fully detached from the parent RecyclerView, either unmodified if no rebinding is required or modified by the adapter if the view was considered dirty.
+Scrap(view):在布局中已进入暂时解绑状态的子view。没有完全脱离父RecyclerView的废弃view可能被重复利用，或该view被认为是脏的或不需要重新绑定或被adapter修改。
+Dirty (view): A child view that must be rebound by the adapter before being displayed.
+Dirty（view）：一个在显示前必须被adapter重新绑定的的子view。
+Positions in RecyclerView:
+RecyclerView introduces an additional level of abstraction between the RecyclerView.Adapter and RecyclerView.LayoutManager to be able to detect data set changes in batches during a layout calculation. This saves LayoutManager from tracking adapter changes to calculate animations. It also helps with performance because all view bindings happen at the same time and unnecessary bindings are avoided.
+Positions in RecyclerView：
+RecyclerView在RecyclerView.Adapter和RecyclerView.LayoutManager之间引入了一个额外的抽象级别以便在批量布局计算时可以检测到数据集的变动。
+它将跟踪adapter改变到计算动画的动作放在了LayoutManager中。
+这也有助于性能因为所有的view绑定发生在同一时间并避免了不必要的绑定。
+
+For this reason, there are two types of position related methods in RecyclerView:
+layout position: Position of an item in the latest layout calculation. This is the position from the LayoutManager's perspective.
+因为这个原因，在RecyclerView中相关的方法中有两种位置类型：
+layout position：在最近一次布局计算时项的位置。这是LayoutManager角度的位置。
+adapter position: Position of an item in the adapter. This is the position from the Adapter's perspective.
+adapter position：adapter中项的位置。这是Adapter角度的位置。
+These two positions are the same except the time between dispatching adapter.notify* events and calculating the updated layout.
+这两种位置是相同的除了分发adapter.notify* 事件和更新布局时。
+Methods that return or receive *LayoutPosition* use position as of the latest layout calculation (e.g. RecyclerView.ViewHolder.getLayoutPosition(), findViewHolderForLayoutPosition(int)). These positions include all changes until the last layout calculation. You can rely on these positions to be consistent with what user is currently seeing on the screen. For example, if you have a list of items on the screen and user asks for the 5th element, you should use these methods as they'll match what user is seeing.
+返回或接收LayoutPosition的方法使用最新一次布局运算的位置（例如
+RecyclerView.ViewHolder.getLayoutPosition(),findViewHolderForLayoutPosition(int)）。这些位置包含知道最新一次布局运算的所有改变。这些位置与用户当前在屏幕中的位置一致。例如，假如你在屏幕中列出了一系列项并且用户点击了第五项，你可以使用这些方法因为它们与用户看到的相符。
+The other set of position related methods are in the form of *AdapterPosition*. (e.g. RecyclerView.ViewHolder.getAdapterPosition(), findViewHolderForAdapterPosition(int)) You should use these methods when you need to work with up-to-date adapter positions even if they may not have been reflected to layout yet. For example, if you want to access the item in the adapter on a ViewHolder click, you should use RecyclerView.ViewHolder.getAdapterPosition(). Beware that these methods may not be able to calculate adapter positions if RecyclerView.Adapter.notifyDataSetChanged() has been called and new layout has not yet been calculated. For this reasons, you should carefully handle NO_POSITION or null results from these methods.
+其它的位置相关的方法采用AdapterPosition。（例如
+RecyclerView.ViewHolder.getAdapterPosition(),findViewHolderForAdapterPosition(int)）当你需要使用最新的adapter位置即使它们可能没有映射到布局中时你应该使用这些方法。例如，如果你想在ViewHolder单击的adapter中访问该项目，你应该使用RecyclerView.ViewHolder.getAdapterPosition()。如果RecyclerView.Adapter.notifyDataSetChanged()已经被调用并且新的布局未被计算时这些方法可能无法计算adapter位置。因此，你要小心处理这些方法返回的NO_POSITION或null。
+When writing a RecyclerView.LayoutManager you almost always want to use layout positions whereas when writing an RecyclerView.Adapter, you probably want to use adapter positions.
+当编写一个RecyclerView.LayoutManager时你几乎总是用到layout
+position，而当编写一个RecyclerView.Adapter时你可能想使用adapter position。
+
+A LayoutManager is responsible for measuring and positioning item views within a RecyclerView as well as determining the policy for when to recycle item views that are no longer visible to the user. By changing the LayoutManager a RecyclerView can be used to implement a standard vertically scrolling list, a uniform grid, staggered grids, horizontally scrolling collections and more. Several stock layout managers are provided for general use.
+LayoutManager负责测量和定位RecyclerView中的项目视图，以及确定何时回收用户不再可见的项目视图的策略。 通过更改LayoutManager，RecyclerView可用于实现标准的垂直滚动列表，统一网格，交错网格，水平滚动集合等。 提供了一些库存布局管理器用于一般使用。
+

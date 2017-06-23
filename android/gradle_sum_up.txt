@@ -1,0 +1,164 @@
+优点：
+1.易于代码和资源的复用
+2.可以轻松创建应用程序的多种变体，无论是对于多apk分发还是应用程序的不同风味
+3.易于配置、扩展、自定义构建过程
+4.好的IDE集成，如android studio
+默认的项目结构
+
+  main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+
+assemble
+打包output
+check
+检查所有task
+build
+This task does both assemble and check.
+clean
+This task cleans the output of the project.
+
+./gradlew :app:dependencies and ./gradlew :app:androidDependencies.
+
+Here are the values that BuildConfig contains:
+boolean DEBUG – if the build is debuggable.
+int VERSION_CODE
+String VERSION_NAME
+String APPLICATION_ID
+String BUILD_TYPE – name of the build type, e.g. "release"
+String FLAVOR – name of the flavor, e.g. "paidapp"
+If the project uses flavor dimensions, additional values are generated. Using the example above, here's an example BuildConfig:
+String FLAVOR = "armFreeapp"
+String FLAVOR_abi = "arm"
+String FLAVOR_version = "freeapp"
+
+ variantFilter { variant ->
+        def names = variant.flavors*.name
+
+        if (names.contains("fakeData") && variant.buildType.name == "release") {
+            variant.ignore = true
+        }
+    }
+
+
+Variants use all the rules files declared in their build type, and product flavors.
+
+There are 2 default rules files
+proguard-android.txt
+proguard-android-optimize.txt
+They are located in the SDK. Using getDefaultProguardFile() will return the full path to the files. They are identical except for enabling optimizations.
+Shrinking Resources
+
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_6
+        targetCompatibility JavaVersion.VERSION_1_6
+    }
+}
+src/main/
+此源集包括所有构建变体共用的代码和资源。
+src/<buildType>/
+创建此源集可加入特定构建类型专用的代码和资源。
+src/<productFlavor>/
+创建此源集可加入特定产品风味专用的代码和资源。
+src/<productFlavorBuildType>/
+创建此源集可加入特定构建变体专用的代码和资源。
+例如，要生成应用的“完整调试”版本，构建系统需要合并来自以下源集的代码、设置和资源：
+
+src/fullDebug/（构建变体源集）
+src/debug/（构建类型源集）
+src/full/（产品风味源集）
+src/main/（主源集）
+如果不同源集包含同一文件的不同版本，Gradle 将按以下优先顺序决定使用哪一个文件（左侧源集替换右侧源集的文件和设置）：
+
+构建变体 > 构建类型 > 产品风味 > 主源集 > 库依赖项
+
+ // Dependency on a local library module
+    compile project(":mylibrary")
+
+    // Dependency on local binaries
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Dependency on a remote binary
+    compile 'com.example.android:app-magic:12.3'
+compile
+Gradle adds the dependency to the compilation classpath and to the APK.
+指定编译时依赖项。Gradle 将此配置的依赖项添加到类路径和应用的 APK。这是默认配置。
+
+apk
+Gradle adds the dependency to the APK only (it is not added to the compilation classpath).
+Note: You can use apk only for JAR binary dependencies. It does not support library modules or AAR binary dependencies.
+指定 Gradle 需要将其与应用的 APK 一起打包的仅运行时依赖项。您可以将此配置与 JAR 二进制依赖项一起使用，而不能与其他库模块依赖项或 AAR 二进制依赖项一起使用。
+provided
+If you're creating an Android app module, you cannot use provided for AAR dependencies, only for JARs. In an Android library module, you can use it for both JARs and AARs.
+指定 Gradle 不与应用的 APK 一起打包的编译时依赖项。如果运行时无需此依赖项，这将有助于缩减 APK 的大小。您可以将此配置与 JAR 二进制依赖项一起使用，而不能与其他库模块依赖项或 AAR 二进制依赖项一起使用。
+However, if you want to add a dependency for a variant that combines a product flavor and a build type, then you must initialize the configuration name in the configurations block. The following sample adds an apk dependency to your "freeDebug" build variant (using a local binary dependency):
+
+configurations {
+    // Initializes a placeholder for the freeDebugApk dependency configuration.
+    freeDebugApk {}
+}
+
+dependencies {
+    freeDebugApk fileTree(dir: 'libs', include: ['*.jar'])
+}
+And if your library module provides multiple variants, you can add different library variants to different app variants like this:
+
+dependencies {
+  // Adds the 'debug' varaint of the library to the debug varaint of the app
+  debugCompile project(path: ':my-library-module', configuration: 'debug')
+
+  // Adds the 'release' varaint of the library to the release varaint of the app
+  releaseCompile project(path: ':my-library-module', configuration: 'release')
+}
+
+Dependency order
+The order in which you list your dependencies indicates the priority for each: the first library is higher priority than the second, the second is higher priority than the third, and so on. This order is important in the event that resources are merged or manifest elements are merged into your app from the libraries.
+
+For example, if your project declares the following:
+
+Dependency on LIB_A and LIB_B (in that order)
+And LIB_A depends on LIB_C and LIB_D (in that order)
+And LIB_B also depends on LIB_C
+Then, the flat dependency order will be as follows:
+
+LIB_A
+LIB_D
+LIB_B
+LIB_C
+
+gradlew cleanBuildCache
+
+By default, the build tools also provide your app's application ID in the ${applicationId} placeholder. The value always matches the final application ID for the current build (including changes by build variants. This is useful when you want to use a unique namespace for identifiers such as an intent action, even between your build variants.
+    manifestPlaceholders = [hostName:"www.example.com"]
+getDefaultProguardFile('proguard-android.txt') 
+proguard-android-optimize.txt
+ Android SDK tools/proguard/ 
+dump.txt
+说明 APK 中所有类文件的内部结构。
+mapping.txt
+提供原始与混淆过的类、方法和字段名称之间的转换。
+seeds.txt
+列出未进行混淆的类和成员。
+usage.txt
+列出从 APK 移除的代码。
+这些文件保存在 <module-name>/build/outputs/mapping/release/ 中
+
+正常情况下，资源压缩器可准确判定系统是否使用了资源。不过，如果您的代码调用 Resources.getIdentifier()（或您的任何库进行了这一调用 - AppCompat 库会执行该调用），这就表示您的代码将根据动态生成的字符串查询资源名称。当您执行这一调用时，默认情况下资源压缩器会采取防御性行为，将所有具有匹配名称格式的资源标记为可能已使用，无法移除。
+
+configure(subprojects.findAll {it.name != 'tropicalFish'}) {
+    hello << {println '- I love to spend time in the arctic waters.'}
+}
+afterEvaluate { Project project ->
+            if (project.arctic) { doLast {
+                println '- I love to spend time in the arctic waters.' }
+            }
+        }
+valuationDependsOn(':producer')
+Configuration dependencies are very different from execution dependencies. Configuration dependencies are between projects whereas execution dependencies are always resolved to task dependencies. Also note that all projects are always configured, even when you start the build from a subproject. The default configuration order is top down, which is usually what is needed.

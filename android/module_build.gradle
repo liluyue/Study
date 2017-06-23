@@ -1,0 +1,140 @@
+/**
+ * The first line in the build configuration applies the Android plugin for
+ * Gradle to this build and makes the android {} block available to specify
+ * Android-specific build options.
+ *配置文件的第一行应用grdle的android插件到这个构建中，使得android块可用于指定android可定的构建选项
+ */
+
+apply plugin: 'com.android.application'
+
+/**
+ * The android {} block is where you configure all your Android-specific
+ * build options.
+ */
+
+android {
+
+  /**
+   * compileSdkVersion specifies the Android API level Gradle should use to
+   * compile your app. This means your app can use the API features included in
+   * this API level and lower.
+   *
+   * buildToolsVersion specifies the version of the SDK build tools, command-line
+   * utilities, and compiler that Gradle should use to build your app. You need to
+   * download the build tools using the SDK Manager.
+   *compileSdkVersion ：gradle用于指定编译app的api级别。
+   *buildToolsVersion：指定gralde用于构建app的SDK构建工具，命令行工具，编译工具的版本。你需要使用SDK管理器下载构建工具。
+   */
+
+  compileSdkVersion 25
+  buildToolsVersion "25.0.3"
+
+  /**
+   * The defaultConfig {} block encapsulates default settings and entries for all
+   * build variants, and can override some attributes in main/AndroidManifest.xml
+   * dynamically from the build system. You can configure product flavors to override
+   * these values for different versions of your app.
+   *封装了所有构建变体的默认设置和条目，可以在构建系统中动态覆盖该模块的AndroidManifest.xml中的对应属性。你可以配置产品风味去覆盖app不同版本的值。
+   */
+
+  defaultConfig {
+
+    /**
+     * applicationId uniquely identifies the package for publishing.
+     * However, your source code should still reference the package name
+     * defined by the package attribute in the main/AndroidManifest.xml file.
+	 *applicationId:发布包的唯一id。但是，源码需要引用AndroidManifest.xml中的package属性
+     */
+
+    applicationId 'com.example.myapp'
+
+    // Defines the minimum API level required to run the app.
+    minSdkVersion 15
+
+    // Specifies the API level used to test the app.
+    targetSdkVersion 25
+
+    // Defines the version number of your app.
+    versionCode 1
+
+    // Defines a user-friendly version name for your app.
+    versionName "1.0"
+  }
+
+  /**
+   * The buildTypes {} block is where you can configure multiple build types.
+   * By default, the build system defines two build types: debug and release. The
+   * debug build type is not explicitly shown in the default build configuration,
+   * but it includes debugging tools and is signed with the debug key. The release
+   * build type applies Proguard settings and is not signed by default.
+   *配置多个构建类型。
+   *构建系统默认有两种构建类型：调试和发布。调试类型未在构建配置中显示指定，但它包含了调试工具和调试密钥的签名。发布类型应用混淆设置并且默认没有签名。
+   */
+
+  buildTypes {
+
+    /**
+     * By default, Android Studio configures the release build type to enable code
+     * shrinking, using minifyEnabled, and specifies the Proguard settings file.
+     */
+
+    release {
+        minifyEnabled true // Enables code shrinking for the release build type.
+        proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+
+  /**
+   * The productFlavors {} block is where you can configure multiple product
+   * flavors. This allows you to create different versions of your app that can
+   * override defaultConfig {} with their own settings. Product flavors are
+   * optional, and the build system does not create them by default. This example
+   * creates a free and paid product flavor. Each product flavor then specifies
+   * its own application ID, so that they can exist on the Google Play Store, or
+   * an Android device, simultaneously.
+   *配置多产品风味。这里许云你通过覆盖defaultConfig中的设置创建app的不同版本。产品风味是可选的，构建系统默认不会创建它们。每个产品风味指定自己的applicationId，如此它们可以同时在google商店或android设置上存在。
+   */
+
+  productFlavors {
+    free {
+      applicationId 'com.example.myapp.free'
+    }
+
+    paid {
+      applicationId 'com.example.myapp.paid'
+    }
+  }
+
+  /**
+   * The splits {} block is where you can configure different APK builds that
+   * each contain only code and resources for a supported screen density or
+   * ABI. You'll also need to configure your build so that each APK has a
+   * different versionCode.
+   *配置不同的apk构建。每个只包含支持的屏幕分辨率或ABI的代码和资源。你也需要配置你的构建使得每个apk有一个不同的版本。
+   */
+
+  splits {
+    // Screen density split settings
+    density {
+
+      // Enable or disable the density split mechanism
+      enable false
+
+      // Exclude these densities from splits
+      exclude "ldpi", "tvdpi", "xxxhdpi", "400dpi", "560dpi"
+    }
+  }
+}
+
+/**
+ * The dependencies {} block in the module-level build configuration file
+ * only specifies dependencies required to build the module itself.
+ *模块级构建的依赖配置，只指定构建模块自己需要的依赖。
+ */
+
+dependencies {
+    compile project(":lib")
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+

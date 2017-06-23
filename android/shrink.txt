@@ -1,0 +1,50 @@
+android的R文件是通过index来定位资源 
+删除无用资源往往是与无用代码的删除结合的
+通过查找无用的索引来去除无用资源，减少apk大小
+代码中通过动态变量来查找资源id的行为使得搜索无用资源的难度无限加大
+解决方案：
+方案1.通过模拟R文件来形式来简化获得资源id步骤的同时去除动态变量与资源的关系
+public final class CompatR {
+    public static final class attr {
+    }
+    public static final class drawable {
+        public static final String ic_launcher="ic_launcher";
+    }
+    public static final class layout {
+        public static final String main="main";
+    }
+    public static final class string {
+        public static final String app_name="app_name";
+    }
+    public static int  getString(Context context,String idName){
+		return
+context.getResources().getIdentifier(idName,"string",context.getPackageName());
+	}
+ public static int  getLayout(Context context,String idName){
+		return
+context.getResources().getIdentifier(idName,"layout",context.getPackageName());
+	}
+ public static int  getDrawable(Context context,String idName){
+		return
+context.getResources().getIdentifier(idName,"drawable",context.getPackageName());
+	}
+    ....
+}
+与R文件获取方式比较:
+R 文件：int id=R.drawable.ic;
+CompatR文件：int id=CompatR.getDrawable(context,CompatR.drawable.ic);
+缺点：R文件直接生成类型int的资源索引，CompatR只保存资源名称，需要通过资源名称来获取资源索引，效率低，由于CompatR保存数据类型为String，R文件保存数据类型为int，所以CompatR占用内存可能是R文件的70~100倍
+
+优点：动态获取id，可以获取资源不存在的情况
+
+一个实际的 String 所占空间的计算公式如下：
+8*( ( 8+12+2*n+4+12)+7 ) / 8 = 8*(int) ( ( ( (n) *2 )+43) /8 )
+其中，n 为字符串长度。
+假设n=16，则CompatR占用内存是R文件占用内存的72多
+
+方案2：
+资源放在apk中，对于main.jar来说，apk是静态的。在版本号控制严格的情况下，main.jar完全可以通过R文件来访问资源文件。
+
+缺点：版本控制有问题（或不匹配）时，可能会出现大量的资源不存在的情况。
+但是，依照现今的资源访问方案，在版本控制有问题是，也可能出现资源错位的情况
+

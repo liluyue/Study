@@ -1,0 +1,53 @@
+/**
+ * The buildscript {} block is where you configure the repositories and
+ * dependencies for Gradle itself--meaning, you should not include dependencies
+ * for your modules here. For example, this block includes the Android plugin for
+ * Gradle as a dependency because it provides the additional instructions Gradle
+ * needs to build Android app modules.
+ *配置gradle本身的仓库和依赖，不应该在这里包含模块的依赖。
+ *例如，这个块中包含了gradle的android插件作为一个依赖 因为它提供gradle构建android app 模块所需的额外指令。
+ */
+
+buildscript {
+
+    /**
+     * The repositories {} block configures the repositories Gradle uses to
+     * search or download the dependencies. Gradle pre-configures support for remote
+     * repositories such as JCenter, Maven Central, and Ivy. You can also use local
+     * repositories or define your own remote repositories. The code below defines
+     * JCenter as the repository Gradle should use to look for its dependencies.
+     *配置gradle需要搜索或下载依赖的仓库。
+     */
+
+    repositories {
+        jcenter()
+    }
+
+    /**
+     * The dependencies {} block configures the dependencies Gradle needs to use
+     * to build your project. The following line adds Android Plugin for Gradle
+     * version 2.3.2 as a classpath dependency.
+	 *配置gralde构建项目需要使用的依赖。下面添加了gradle的版本号为2.3.2的android 插件作为路径依赖
+     */
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.2'
+    }
+}
+
+/**
+ * The allprojects {} block is where you configure the repositories and
+ * dependencies used by all modules in your project, such as third-party plugins
+ * or libraries. Dependencies that are not required by all the modules in the
+ * project should be configured in module-level build.gradle files. For new
+ * projects, Android Studio configures JCenter as the default repository, but it
+ * does not configure any dependencies.
+ *为项目中所有模块配置仓库和依赖，如第三方插件或库。非所有模块都需要的依赖应该在模
+级的build.gralde中配置。
+ */
+
+allprojects {
+   repositories {
+       jcenter()
+   }
+}

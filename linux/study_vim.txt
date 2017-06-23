@@ -1,0 +1,22 @@
+六大模式：
+1.normal	
+2.insert	i_
+3.visual	v_
+4.select	
+5.command	:
+6.command edit	c_
+可执行模式的使用 gQ
+insert临时切换到normal	Ctrl-O
+[]	可选参数
+{}	必选参数
+''  操作选项
+<lt>	<
+<Bar>	|
+-	vim命令参数
+screen	软件的所有可视区域
+window	缓存或图像显示的区域
+showmode 显示模式信息
+showcmd	显示命令信息
+ruler	显示位置信息
+
+
