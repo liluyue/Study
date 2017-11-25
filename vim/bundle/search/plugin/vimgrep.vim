@@ -5,6 +5,7 @@ if has("win32")
 endif
 nmap <c-c> "*y
 nmap <F2>    :call Search_crash('')<cr>
+nmap crashl  :execute 'normal '.g:crashLineNumber.'G'<cr>
 nmap <F3>    :call Search_crash(expand('<cword>'))<cr>
 nmap <F4>    :call Search_crash(expand('<cWORD>'))<cr>
 nmap <F5>   :call PositionDrawable(expand('<cWORD>'),expand('%:p:h'))<cr>
@@ -17,17 +18,27 @@ noremap <a-right> :tabn<cr>
 
 "adb command
 :command -nargs=1 AdbUninstall :call Adb_Uninstall(<f-args>)
-:command -nargs=+ -complete=file AdbInstall :!adb install <q-args>
+:command -nargs=+ -complete=file AdbInstall :execute '!adb install '.fnamemodify(<q-args>,':p')
 "au BufRead,BufNewFile * set filetype=logcat 
+let g:crashLineNumber=-1
 function! Search_crash(a)
 : if a:a == "" 
-: let s:search='uncaughtException\|crash\|fatal\|excep\c'
+:let s:shutDown='Shutting\s\+down'
+:let s:crash='uncaughtException'
+:let s:fatal='fatal'
+:let l:pos= search(s:shutDown.'\|'.s:crash.'\|'.s:fatal.'\c')
+let g:crashLineNumber=l:pos
+:if l:pos!=0  
+echo "crash line number:".l:pos
+"execute "normal".l:pos."G"
+endif
+: let s:search='uncaughtException\|fatal\|excep\|'.s:shutDown.'\c'
 : else 
 : let s:search=a:a
 : endif
 :cclose
 ":echo s:search
-:execute ":vimg ". s:search ." %"
+:execute ":vimg /". s:search ."/j %"
 :cw
 :highlight MyGroup cterm=reverse gui=reverse ctermfg=6
 :call matchadd("MyGroup",s:search)
