@@ -7,3 +7,6 @@ answer:git pull
 3.questin : 
 answer:git rm --cached filename
 answer:git checkout -- <file>...
+
+4:question:git根据commit信息查看commit
+answer: git log  --grep=''
