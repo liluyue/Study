@@ -9,7 +9,6 @@ nmap crashl  :execute 'normal '.g:crashLineNumber.'G'<cr>
 nmap <F3>    :call Search_crash(expand('<cword>'))<cr>
 nmap <F4>    :call Search_crash(expand('<cWORD>'))<cr>
 nmap <F5>   :call PositionDrawable(expand('<cWORD>'),expand('%:p:h'))<cr>
-cnoremap <F2> :call Adb_Activity()<cr>
 noremap <a-left> :tabp<cr>
 noremap <a-right> :tabn<cr>
 "search command
@@ -17,8 +16,6 @@ noremap <a-right> :tabn<cr>
 :command -nargs=? Translate :call Tran(<q-args>)
 
 "adb command
-:command -nargs=1 AdbUninstall :call Adb_Uninstall(<f-args>)
-:command -nargs=+ -complete=file AdbInstall :execute '!adb install '.fnamemodify(<q-args>,':p')
 "au BufRead,BufNewFile * set filetype=logcat 
 let g:crashLineNumber=-1
 function! Search_crash(a)
@@ -56,18 +53,6 @@ function! PositionDrawable(drawable,path)
  :exec "vimgrep '".s:cword ."'  ".s:path 
 endfunction
 
-function! Adb_Activity()
-	let tmpfile = tempname()
-	:exe "tabedit ". tmpfile
-  :0,$d
-  :r !adb shell dumpsys activity activities
-  :w
-  :  let buflist = []
-  :for i in range(tabpagenr('$'))
-   :   call extend(buflist, tabpagebuflist(i + 1))
-   :endfor
-   :echo buflist
- endfunction
 
 "show window of cmd result
 function! Show_CmdResult()
@@ -82,42 +67,8 @@ function! Show_CmdResult()
   endif
 endfunction
 
-"uninstall by package
-function! Adb_Uninstall(package)
- if (a:package==1)
-  let  a:pkg="com.excelliance.dualaid"
- elseif (a:package==2)
-  let a:pkg="com.excean.mvoice"
- elseif (a:package==3)
-  let a:pkg="com.excean.wxaid"
- else
-   let a:pkg=a:package
- endif
-  call  Show_CmdResult()
- "!start /b adb uninstall com.excelliance.dualaid
-
- echo a:pkg
-:execute '$r !adb uninstall '.a:pkg
-
-endfunction
-
 let s:title='cmd result'
 
-"clear apk data by package
-function! Adb_Clear(package)
- if (a:package==1)
-  let  a:pkg="com.excelliance.dualaid"
-  elseif (a:package==2)
-  let a:pkg="com.excean.mvoice"
- elseif (a:package==3)
-  let a:pkg="com.excean.wxaid"
- else
-   let a:pkg=a:package
- endif
- call Show_CmdResult()
-"!start /min adb shell pm clear com.excelliance.dualaid
-:execute '$r !adb shell pm clear '.a:pkg
-endfunction
 
 
 let s:translator_engines = {
