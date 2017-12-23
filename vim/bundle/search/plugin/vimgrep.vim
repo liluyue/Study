@@ -1,7 +1,7 @@
 let search_crash=1
 set shortmess+=I
 if has("win32")
-	noremap <S-E> :execute' !start '.expand("%:h")<cr>
+	noremap <C-S-E> :execute' !start '.expand("%:h")<cr>
 endif
 nmap <c-c> "*y
 nmap <F2>    :call Search_crash('')<cr>
