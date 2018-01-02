@@ -34,19 +34,35 @@ endif
 :command! -nargs=1 -complete=file AdbPush :execute '!start /b adb push ' <q-args>."/sdcard/"
 :let g:isIconv=1
 :function! SdcardFile(A,L,P)
-:"return substitute(system('adb shell ls /sdcard/'),'\r','','g')
-let l:A=empty(a:A)?'/sdcard': a:A =~'[*\/]$'? a:A : a:A . '*'
+let l:A=substitute((a:A=~'^/'?'':'/').a:A,'[/\\][^/\\]\{-,}$','','')
+let l:A=l:A.'/'
 :let l:files=systemlist('adb shell ls '.l:A)
-":let l:files=map(l:files,'"/sdcard/".v:val')
+:let l:files=map(l:files,'substitute(l:A.v:val,"\n\\|\r","","g")')
+"let l:files=filter(l:files,'v:val=~a:A')
+"let g:SdFiles=l:files
+"let g:SdcardFileALP=[" start a:A--".a:A,'a:L--'.a:L,'a:P--'.a:P,'l:A--'.l:A]
+"return l:files
 :if(len(l:files)<1)
 :  return 
 elseif(len(l:files)==1&&string(l:files)=~'No such file or directory\|Permission denied')
 :  return
 :endif
-:let l:result=substitute(join(l:files,"\n"),"\r","","g")
+:let l:result=join(l:files,"\n")
+"let g:SdFile=l:result
 :return g:isIconv?iconv(l:result,'utf8','gbk'):l:result
 :endfunction
+
 :let g:adbCmd=['adb shell getprop']
+function! AdbShowPid(package)
+	if (a:package>0)
+		let a:pkg=g:apkPackageList[a:package-1]
+	else
+		let a:pkg=a:package
+	endif
+	echo a:pkg
+	:call append('.',filter(systemlist('adb shell ps'),'v:key==0 || v:val =~ a:pkg'))
+
+endfunction
 function! AdbShowResultInCurrent(cmd)
 call append('.',split(system(a:cmd),'\n'))
 endfunction	
@@ -61,6 +77,25 @@ function! AdbActivity()
 	:   call extend(buflist, tabpagebuflist(i + 1))
 	:endfor
 	:execute " 1|/Running/;/mResume"
+	":echo buflist
+endfunction
+function! AdbMemory(package)
+	if (a:package>0)
+		let a:pkg=g:apkPackageList[a:package-1]
+	else
+		let a:pkg=a:package
+	endif
+	echo a:pkg
+	let tmpfile = tempname()
+	:exe "tabedit ". tmpfile
+	:0,$d
+	:call append(0,systemlist('adb shell dumpsys meminfo '.a:pkg))
+	:w
+	:  let buflist = []
+	:for i in range(tabpagenr('$'))
+	:   call extend(buflist, tabpagebuflist(i + 1))
+	:endfor
+	:execute ' 1|/TOTAL/'
 	":echo buflist
 endfunction
 
