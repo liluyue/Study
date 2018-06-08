@@ -1,0 +1,17 @@
+redir! > mark_string2.txt
+g/^.*\S\+.*string:/
+redir END
+
+%s/.\{-}string:\(.\{-}\):/---\1\r/g
+g/^[^-].*/d
+%s/---//
+sort
+g/^\(.*\)$\n\1$/d
+
+
+Referenced Strings
+Marking
+Resource Reference Graph:
+The root reachable resources are:
+Skipped unused resource
+

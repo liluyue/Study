@@ -12,12 +12,14 @@ nmap <F5>   :call PositionDrawable(expand('<cWORD>'),expand('%:p:h'))<cr>
 noremap <a-left> :tabp<cr>
 noremap <a-right> :tabn<cr>
 "search command
-:command -nargs=? ShowSearch :call Search_crash(<q-args>)
-:command -nargs=? Translate :call Tran(<q-args>)
+:command! -nargs=? ShowSearch :call Search_crash(<q-args>)
+:command! -nargs=? Translate :call Tran(<q-args>)
 
 "adb command
 "au BufRead,BufNewFile * set filetype=logcat 
 let g:crashLineNumber=-1
+"lvimgrep/vimgrep
+let g:searchEngine='lvimgrep'
 function! Search_crash(a)
 : if a:a == "" 
 :let s:shutDown='Shutting\s\+down'
@@ -34,9 +36,14 @@ endif
 : let s:search=a:a
 : endif
 :cclose
+:lclose
 ":echo s:search
-:execute ":vimg /". s:search ."/j %"
-:cw
+:execute ":".g:searchEngine." /". s:search ."/j %"
+:if g:searchEngine =~ 'lvim'
+: lw
+:else
+: cw
+:endif
 :highlight MyGroup cterm=reverse gui=reverse ctermfg=6
 :call matchadd("MyGroup",s:search)
 endfunction
